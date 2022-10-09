@@ -20,12 +20,16 @@ stages:
     - task: SonarCloudPrepare@1
       displayName: Preparing Sonarcloud
       inputs:
-        SonarCloud: 'sonar-azuredevops'
+        SonarCloud: 'sonarcloud'
         organization: 'josedanielbaena'
-        scannerMode: 'MSBuild'
-        projectKey: 'lazyloadbackend'
-        projectName: 'lazy-load-bakend'
-        
+        scannerMode: 'Other'
+        extraProperties: |
+          # Additional properties that will be passed to the scanner, 
+          # Put one key=value per line, example:
+          # sonar.exclusions=**/*.bin
+          sonar.projectKey=josedanielbaena_lazy-load-backend
+          sonar.projectName=lazy-load-backend
+
     - task: JavaToolInstaller@0
       inputs:
         versionSpec: '8'
