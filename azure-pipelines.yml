@@ -18,11 +18,13 @@ stages:
     steps:
     
     - task: SonarCloudPrepare@1
-      displayName: Preparing SonarCloud
+      displayName: Preparing Sonarcloud
       inputs:
         SonarCloud: 'sonar-azuredevops'
         organization: 'josedanielbaena'
-        scannerMode: 'Other'
+        scannerMode: 'MSBuild'
+        projectKey: 'lazyloadbackend'
+        projectName: 'lazy-load-bakend'
         
     - task: JavaToolInstaller@0
       inputs:
