@@ -18,23 +18,34 @@ stages:
     steps:
     
     - task: SonarCloudPrepare@1
-      displayName: Preparing Sonarcloud
       inputs:
-        SonarCloud: 'sonarcloud'
+        SonarCloud: 'sonar-azuredevops'
         organization: 'josedanielbaena'
-        scannerMode: 'Other'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'lazyloadbackend'
+        cliProjectName: 'lazyloadbackend'
+        cliSources: 'src'
         extraProperties: |
           # Additional properties that will be passed to the scanner, 
           # Put one key=value per line, example:
           # sonar.exclusions=**/*.bin
-          sonar.projectKey=josedanielbaena_lazyloadbackend
-          sonar.projectName=lazyloadbackend
+          sonar.binaries=build/classes
+          sonar.sources=src/main/java
+          sonar.tests=src/test/java
+          sonar.java.coveragePlugin=cobertura
+          sonar.cobertura.reportsPath=**/coverage.xml
+          sonar.exclusions=**/*.java
+          sonar.language=java
+      displayName: Prepararing Sonar  
 
     - task: JavaToolInstaller@0
       inputs:
         versionSpec: '8'
         jdkArchitectureOption: 'x64'
         jdkSourceOption: 'PreInstalled'
+        
+  
 
     - task: Gradle@3
       displayName: Building
