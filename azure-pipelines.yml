@@ -1,0 +1,80 @@
+# Gradle
+# Build your Java project and run tests with Gradle using a Gradle wrapper script.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+stages:
+- stage: Build
+  displayName: Build 
+  jobs:
+  - job: BuildProject
+    displayName: Build Project
+
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    
+    - task: SonarCloudPrepare@1
+      displayName: Preparing SonarCloud
+      inputs:
+        SonarCloud: 'sonar-azuredevops'
+        organization: 'josedanielbaena'
+        scannerMode: 'Other'
+        
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '8'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+
+    - task: Gradle@3
+      displayName: Building
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'build -x test'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.8'
+        sonarQubeRunAnalysis: false
+        spotBugsAnalysis: false
+        gradleOptions: '-Xmx1024m'
+
+    - script: |
+        ArtifactName=$(ls -LSh build/libs | awk 'NR==1 {print $0}')
+        mkdir artefacto
+        mv build/libs/$ArtifactName artefacto/app.jar
+      displayName: Moving Artifact
+
+
+    - task: Gradle@3
+      displayName: Testing
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'test'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST-*.xml'
+        codeCoverageToolOption: 'Cobertura'
+        codeCoverageClassFilesDirectories: 'build/classes/main/'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.8'
+        sonarQubeRunAnalysis: false
+        spotBugsAnalysis: false
+        gradleOptions: '-Xmx1024m'
+
+    - task: SonarCloudAnalyze@1
+      displayName: Running analysis
+
+    - task: SonarCloudPublish@1
+      displayName: Publishing quality gates
+      inputs:
+        pollingTimeoutSec: '300'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'artefacto'
+        ArtifactName: 'artifact'
+        publishLocation: 'Container'
