@@ -103,7 +103,7 @@ stages:
         containerRegistry: 'dockerhubconnection'
         repository: 'bazul98/lazy-load-backend'
         command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
+        Dockerfile: 'Dockerfile'
         buildContext: '.'
         tags: |
           $(Build.BuildId)
