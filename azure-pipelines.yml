@@ -83,7 +83,7 @@ stages:
         gradleOptions: '-Xmx1024m'
 
     - task: SonarCloudAnalyze@1
-      displayName: Running analysis
+      displayName: Running code analysis
 
     - task: SonarCloudPublish@1
       displayName: Publishing quality gates
@@ -91,7 +91,22 @@ stages:
         pollingTimeoutSec: '300'
 
     - task: PublishBuildArtifacts@1
+      displayName: Publishing Artifact
       inputs:
         PathtoPublish: 'artefacto'
         ArtifactName: 'artifact'
         publishLocation: 'Container'
+        
+    - task: Docker@2
+      displayName: Uploading image to DockerHub
+      inputs:
+        containerRegistry: 'dockerhubconnection'
+        repository: 'bazul98/lazy-load-backend'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        buildContext: '.'
+        tags: |
+          $(Build.BuildId)
+          latest
+        addPipelineData: false
+        addBaseImageData: false
