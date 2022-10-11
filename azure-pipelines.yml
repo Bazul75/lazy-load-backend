@@ -116,6 +116,6 @@ stages:
         addPipelineData: false
         addBaseImageData: false
 
-- stage: Deployment
-  displayName: Deployment
-  dependsOn: Build 
+#- stage: Deployment
+#  displayName: Deployment
+#  dependsOn: Build 
