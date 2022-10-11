@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lazy-load-backend
+  name: lazy-load-backend
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: lazy-load-backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: lazy-load-backend
+    spec:
+      containers:
+      - name: lazy-load-backend
+        image: bazul75/lazy-load-backend:latest
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: lazy-load-backend-config
+        - secretRef:
+            name: lazy-load-backend-secret
+        ports:
+        - containerPort: 9000
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lazy-load-backend-secret
+  labels:
+    app: lazy-load-backend
+type: Opaque
+data:
+  DB_USER: "dXNlcg=="
+  DB_PASS: "dG5zUGFzczA="
+  DB_NAME: "bGF6eV9sb2FkX2Rldg=="
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lazy-load-backend-config
+  labels:
+    app: lazy-load-backend
+data:
+  DB_HOST: "mongo"
+  DB_PORT: "27017"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lazy-load-backend
+  labels: 
+    app: lazy-load-backend
+spec:
+  selector:
+    app: lazy-load-backend
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+      name: 9000-http

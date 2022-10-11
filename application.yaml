@@ -8,8 +8,8 @@
         max-request-size: 500KB
     data:
       mongodb:
-        host: ds029837.mlab.com
-        port: 29837
-        database: lazy_load_dev
-        username: user
-        password: tnsPass0
+        host: ${DB_HOST}
+        port: ${DB_PORT}
+        database: ${DB_NAME}
+        username: ${DB_USER}
+        password: ${DB_PASS}
