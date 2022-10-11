@@ -89,6 +89,11 @@ stages:
       displayName: Publishing quality gates
       inputs:
         pollingTimeoutSec: '300'
+    
+    - task: sonarcloud-buildbreaker@2
+      inputs:
+        SonarCloud: 'sonar-azuredevops'
+        organization: 'josedanielbaena'    
 
     - task: PublishBuildArtifacts@1
       displayName: Publishing Artifact
@@ -96,7 +101,7 @@ stages:
         PathtoPublish: 'artefacto'
         ArtifactName: 'artifact'
         publishLocation: 'Container'
-        
+
     - task: Docker@2
       displayName: Uploading image to DockerHub
       inputs:
@@ -110,3 +115,7 @@ stages:
           latest
         addPipelineData: false
         addBaseImageData: false
+
+- stage: Deployment
+  displayName: Deployment
+  dependsOn: Build 
