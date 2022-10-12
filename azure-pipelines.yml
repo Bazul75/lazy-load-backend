@@ -86,7 +86,7 @@ stages:
       displayName: Running code analysis
 
     - task: SonarCloudPublish@1
-      displayName: Publishing quality gates
+      displayName: Publishing code analysis result
       inputs:
         pollingTimeoutSec: '300'
     
@@ -116,6 +116,21 @@ stages:
         addPipelineData: false
         addBaseImageData: false
 
-#- stage: Deployment
-#  displayName: Deployment
-#  dependsOn: Build 
+
+- stage: Deployment
+  displayName: Deployment 
+  jobs:
+  - job: 'DeploymentKubernetes'
+    displayName: Deployment Kubernetes
+    
+    steps:
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'endpoint'
+        namespace: 'default'
+        command: 'apply'
+        useConfigurationFile: true
+        configuration: 'deployment.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
