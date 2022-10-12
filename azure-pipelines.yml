@@ -120,7 +120,7 @@ stages:
 - stage: Deployment
   displayName: Deployment 
   jobs:
-  - job: 'DeploymentKubernetes'
+  - job: DeploymentKubernetes
     displayName: Deployment Kubernetes
     
     steps:
@@ -131,6 +131,6 @@ stages:
         namespace: 'default'
         command: 'apply'
         useConfigurationFile: true
-        configuration: 'deployment.yaml'
+        configuration: 'Deployment.yaml'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
