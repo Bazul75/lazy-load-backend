@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: lazy-load-backend
-        image: bazul75/lazy-load-backend:latest
+        image: bazul98/lazy-load-backend:latest
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
