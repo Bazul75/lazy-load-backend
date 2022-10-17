@@ -40,9 +40,9 @@ metadata:
     app: lazy-load-backend
 type: Opaque
 data:
-  DB_USER: "dXNlcg=="
-  DB_PASS: "dG5zUGFzczA="
-  DB_NAME: "bGF6eV9sb2FkX2Rldg=="
+  DB_USER: "dXNlcgo="
+  DB_PASS: "dG5zUGFzczAK"
+  DB_NAME: "cHJ1ZWJhCg=="
 ---
 apiVersion: v1
 kind: ConfigMap
